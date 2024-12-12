@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>احجز يا وحش ⚽</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('59bd0136-a64d-4754-a66d-d5102f9340ff.webp');
+            background-size: cover;
+            background-attachment: fixed;
+            color: black; /* النصوص في الصفحة باللون الأسود */
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 2.5em;
+            color: black; /* العنوان باللون الأسود */
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        table, th, td {
+            border: 1px solid #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            color: white; /* النصوص داخل الجدول باللون الأبيض */
+        }
+        th {
+            background-color: #007bff;
+            font-size: 1.2em;
+        }
+        td {
+            font-size: 1.1em;
+        }
+        .price {
+            color: white; /* سعر الساعة باللون الأبيض */
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>احجز يا وحش ⚽</h1>
+    <table>
+        <tr>
+            <th>الساعة</th>
+            <th>الحالة</th>
+            <th>السعر</th>
+        </tr>
+        <script>
+            let startHour = 13; // 1 PM
+            let endHour = 1;    // 1 AM (next day)
+            let reservations = {}; // Initialize an empty object for reservations
+
+            // عرض الساعات في الجدول، في البداية كل الساعات ستكون متاحة
+            for (let i = startHour; i <= 24 + endHour; i++) {
+                let hour = i <= 24 ? i : i - 24;
+                let displayTime = hour < 12 ? `${hour}:00 ص` : `${hour - 12 || 12}:00 م`;
+
+                // عرض كل الساعات كـ "متاحة"
+                let reserved = `<input type="checkbox" onchange="reserveTime(this, '${displayTime}')">`;
+
+                document.write(`
+                    <tr>
+                        <td>${displayTime}</td>
+                        <td>${reserved}</td>
+                        <td class="price">200 جنيه</td>
+                    </tr>
+                `);
+            }
+
+            function reserveTime(checkbox, time) {
+                if (checkbox.checked) {
+                    // إضافة حجز جديد عند تحديد الساعة
+                    let expiryTime = new Date();
+                    expiryTime.setHours(expiryTime.getHours() + 12); // إضافة 12 ساعة
+
+                    let expiryFormatted = `${expiryTime.getHours()}:${expiryTime.getMinutes()}`;
+
+                    // حفظ الحجز في الـ localStorage (لحفظ الحجز في المتصفح)
+                    reservations[time] = expiryFormatted;
+
+                    // تحديث حالة الجدول لإظهار الحجز
+                    checkbox.parentElement.innerHTML = `محجوز حتى الساعة ${expiryFormatted}`;
+
+                    // تحديث الـ localStorage مع الحجز الجديد
+                    localStorage.setItem("reservations", JSON.stringify(reservations));
+
+                    document.getElementById("reserveBtn").disabled = false;
+                }
+            }
+        </script>
+    </table>
+    <button class="btn" id="reserveBtn" onclick="window.location.href='reservation.html'" disabled>احجز الآن</button>
+</body>
+</html>
